@@ -110,6 +110,23 @@ int main()
     std::cout << markov_chain<5>(A, v0, 1e-5, 100)
               << std::endl;
 
+    // Change 'A' so that the column sums are still 1.0,
+    // but there is a negative entry in (0,0)
+    A(0, 0) -= 1.1;
+    A(1, 0) += 1.1;
+
+    try
+    {
+        std::cout << markov_chain<5>(A, v0, 1e-5, 100)
+                  << std::endl;
+    }
+    catch (std::invalid_argument &e)
+    {
+        std::cout << "A is not stochastic" << std::endl;
+    }
+
+    //PROJECT QUESTION 5
+    
     return 0;
 }
 
@@ -221,10 +238,13 @@ vec<n> markov_chain(
 
     for (unsigned int k{1}; k <= max_iterations; ++k)
     {
-        vec<n> v1{A*v0};
-        if (norm(v1 - v0) < eps_step) {
+        vec<n> v1{A * v0};
+        if (norm(v1 - v0) < eps_step)
+        {
             return v1;
-        } else {
+        }
+        else
+        {
             v0 = v1;
         }
     }
