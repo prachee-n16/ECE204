@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cassert>
 #include "tlinalg.hpp"
+#include <typeinfo>
 
 /**
  * Description of Project
@@ -126,6 +127,11 @@ int main()
     }
 
     //PROJECT QUESTION 5
+    matrix<3,3> B{
+        {0.3097, 0.4077, 0.4539},
+        {0.2817, 0.4337, 0.4375},
+        {0.4086, 0.1586, 0.1086},
+    };
     
     return 0;
 }
@@ -209,30 +215,21 @@ vec<n> markov_chain(
     double eps_step,
     unsigned int max_iterations)
 {
-    // Ensure that 'A' represents a stocastic matrix
-    //  - All entries are non-negative
-    //  - All of the rows add up to '1.0' with an
-    //    allowed error of eps_step
-    // Iterate as necessary
-
-    // Iterates through matrix to check if it's stocastic
-    // FIXME: Is this supposed to be the transpose check>>>>>
     for (int i = 0; i < n; i++)
     {
-        int row_total = 0;
-
+        double col_total = 0.0;
         for (int j = 0; j < n; j++)
         {
-            row_total += A(i, j);
-
-            if (A(i, j) < 0)
+            col_total += A(j, i);
+            if (A(i, j) < 0.0)
             {
-                throw std::invalid_argument("ERROR 1");
+                throw std::invalid_argument("Invalid Argument");
             }
         };
-        if (std::abs(1 - row_total) < (eps_step / n))
+
+        if (std::abs(1.00 - col_total) >= (eps_step * n))
         {
-            throw std::invalid_argument("ERROR 2");
+           throw std::invalid_argument("Invalid Argument");
         }
     }
 
@@ -249,5 +246,9 @@ vec<n> markov_chain(
         }
     }
 
+    throw std::runtime_error{
+        "Fixed-point iteration did not converge"
+    };
+    
     return vec<n>{};
 }
