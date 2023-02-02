@@ -1,7 +1,7 @@
 {
     "files.associations": {
-        "iostream": "cpp",
-        "*.tpp": "cpp",
+        "stdexcept": "cpp",
+        "ostream": "cpp",
         "__bit_reference": "cpp",
         "__bits": "cpp",
         "__config": "cpp",
@@ -40,6 +40,7 @@
         "iomanip": "cpp",
         "ios": "cpp",
         "iosfwd": "cpp",
+        "iostream": "cpp",
         "istream": "cpp",
         "limits": "cpp",
         "locale": "cpp",
@@ -47,10 +48,8 @@
         "mutex": "cpp",
         "new": "cpp",
         "optional": "cpp",
-        "ostream": "cpp",
         "ratio": "cpp",
         "sstream": "cpp",
-        "stdexcept": "cpp",
         "streambuf": "cpp",
         "string": "cpp",
         "string_view": "cpp",

@@ -132,6 +132,9 @@ int main()
         {0.2817, 0.4337, 0.4375},
         {0.4086, 0.1586, 0.1086},
     };
+
+    vec<3> u3{ 0.2, 0.3, 0.5 };    // Stochastic vector
+    std::cout << markov_chain<3>( B, u3, 1e-5, 1000 ) << std::endl;
     
     return 0;
 }
@@ -171,7 +174,7 @@ void print(
 // starting with the initial point 'x0', and if
 //    x    = f( x  )
 //     k+1       k
-// then continuine iterating until
+// then continue iterating until
 //    | x    - x  | < eps_step
 //       k+1    k
 //
