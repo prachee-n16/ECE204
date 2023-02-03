@@ -32,7 +32,8 @@ void data_append( data_t *p_this, double new_value ) {
 }
 
 double data_current( data_t *p_this ) {
-  // Your implementation here...
+  // Find solution a.k.a. coeff for polynomial
+  
   return 0.0;
 }
 

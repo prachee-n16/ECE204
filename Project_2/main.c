@@ -29,21 +29,9 @@ int main() {
     double exact = f( STEP_SIZE*k );
     double approx = exact + ERROR*box_muller(); 
     data_append( &record, approx );
-    printf( "Data %d: %f\n", k, approx );
+    printf( "%d ", k );
   }
 
-  for ( k = 32; k < 100; ++k ) {
-    double exact = f( STEP_SIZE*k );
-    double approx = exact + ERROR*box_muller(); 
-    data_append( &record, approx );
-
-    printf( "Data %d: %f\n", k, approx );
-    printf( "  Ideal current value:   %f\n", exact );
-    printf( "  Approximation:         %f\n\n", data_current( &record ) );
-    printf( "  Ideal next value:      %f\n", f( STEP_SIZE*(k + 1.0) ) );
-    printf( "  Approximation:         %f\n\n", data_next( &record ) );
-  }
-  
   return 0;
 }
 
