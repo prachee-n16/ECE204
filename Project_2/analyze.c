@@ -9,18 +9,12 @@
 
 void data_init(data_t *p_this, double step_size)
 {
-  // Initialize dynamic array
-  //p_this = malloc(sizeof(int) * CAPACITY);
   p_this->front = 0;
 }
 
 // You may not need this if you do not have a dynamically
 // allocated array.
-void data_destroy(data_t *p_this)
-{
-  // Free data
-  //free(p_this);
-}
+void data_destroy(data_t *p_this){}
 
 void data_append(data_t *p_this, double new_value)
 {
@@ -65,9 +59,23 @@ double data_current(data_t *p_this)
 
 double data_next(data_t *p_this)
 {
+  //Find solution a.k.a. coeff for polynomial
+  double coeff_1[] = { 0.022727272727273 , 0.007575757575758 , -0.003787878787879 , -0.011363636363636 , -0.015151515151515 , -0.015151515151515 , -0.011363636363636 , -0.003787878787879 ,  0.007575757575758 , 0.022727272727273};
+  double coeff_2[] = {0.259090909090910 , 0.110606060606061 , -0.003787878787879 , -0.084090909090910 , -0.130303030303031 , -0.142424242424243 , -0.120454545454546 , -0.064393939393940 ,  0.025757575757576 , 0.150000000000001};
+  double coeff_3[] = {0.618181818181819, 0.381818181818182 ,  0.190909090909091 ,  0.045454545454545 , -0.054545454545455 , -0.109090909090910 , -0.118181818181819 , -0.081818181818182 ,  0.000000000000001 , 0.127272727272729};
+  
+  size_t k;
 
-  // Your implementation here...
-  return 0.0;
+  double result = 0.0;
+
+  for (k = 0; k < CAPACITY; k++)
+  {
+    result += coeff_1[k] * (p_this->entries_[(CAPACITY + (p_this->front - k)) % CAPACITY] );
+    result += coeff_2[k] * (p_this->entries_[(CAPACITY + (p_this->front - k)) % CAPACITY] );
+    result += coeff_3[k] * (p_this->entries_[(CAPACITY + (p_this->front - k)) % CAPACITY] );
+  }
+
+  return result;
 }
 
 
