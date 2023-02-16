@@ -26,6 +26,12 @@ class Polynomial {
       std::complex<double>        const  z
     );
 
+    static std::complex<double> deevaluate(
+      std::complex<double> const *const coeffs,
+      unsigned int                const  degree,
+      std::complex<double>        const  z
+    );
+
     static std::complex<double> find_root(
       std::complex<double> const *const coeffs,
       unsigned int                const degree

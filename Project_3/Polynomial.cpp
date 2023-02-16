@@ -1,5 +1,6 @@
 #include <cassert>
 #include <stdexcept>
+#include <cmath>
 #include "Polynomial.hpp"
 
 // Create a polynomial of degree 'N - 1' where 'N' is
@@ -105,12 +106,34 @@ std::complex<double> Polynomial::evaluate(
   // Use Horner's rule to evaluate polynomial
 
   // Store the result here
-  double result;
+  std::complex<double> result;
 
   // Iterate through coefficient list
+  // Coefficients (smallest --> biggest degree)
   for (int i = 0; i < degree+1; i++) {
     //Horners rule basically
-    result = result*z + coeffs[i];
+    result = coeffs[i]+(z*result);
+  }
+
+  return result;
+}
+
+std::complex<double> Polynomial::deevaluate(
+  std::complex<double> const *const coeffs,
+  unsigned int         const  degree,
+  std::complex<double> const  z
+) {
+  // Use Horner's rule to evaluate polynomial
+
+  // Store the result here
+  std::complex<double> result;
+
+  // Iterate through coefficient list
+  // Coefficients (smallest --> biggest degree)
+  for (int i = 1; i < degree+1; i++) {
+    std::complex<double> j = i;
+    //Horners rule basically
+    result = result*z + coeffs[i]*j;
   }
 
   return result;
@@ -131,8 +154,28 @@ std::complex<double> Polynomial::find_root(
   std::complex<double> const *const coeffs,
   unsigned int                const degree
 ) {
-  
-  return 0.0;
+  // Stores next approximation
+  double x_k_next = 0.0;
+  // Stores current approximation
+  double x_k = 1.0;
+  double const eps_step = 10e-10;
+  // Check when the next and current approximation are same
+
+  int iteration = 0;
+
+  while (abs(x_k - x_k_next) < eps_step) {
+    // Let next approximation be current value
+    x_k = x_k_next;
+
+    const std::complex<double> f_x = evaluate(coeffs, degree, x_k);
+    const std::complex<double> der_f_x  = deevaluate(coeffs, degree, x_k);
+    
+    std::cout << "Iteration " << iteration << " with value " << x_k << std::endl;
+
+    iteration +=1;
+  }
+
+  return x_k_next;
 }
 
 // Polynomial division
