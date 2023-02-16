@@ -1,6 +1,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <cmath>
+#include <iostream>
 #include "Polynomial.hpp"
 
 // Create a polynomial of degree 'N - 1' where 'N' is
@@ -97,7 +98,6 @@ std::vector<std::complex<double>> Polynomial::roots() const {
 }
 
 // Evaluate the polynomial at the point 'x'
-
 std::complex<double> Polynomial::evaluate(
   std::complex<double> const *const coeffs,
   unsigned int         const  degree,
@@ -106,13 +106,15 @@ std::complex<double> Polynomial::evaluate(
   // Use Horner's rule to evaluate polynomial
 
   // Store the result here
-  std::complex<double> result;
+  std::complex<double> result = 0;
 
   // Iterate through coefficient list
   // Coefficients (smallest --> biggest degree)
-  for (int i = 0; i < degree+1; i++) {
+  for (int i = 0; i < degree + 1; i++) {
     //Horners rule basically
-    result = coeffs[i]+(z*result);
+    // This result doesn't seem right
+    // ok it's degree - i
+    result = coeffs[degree-i]+(z*result);
   }
 
   return result;
@@ -131,9 +133,9 @@ std::complex<double> Polynomial::deevaluate(
   // Iterate through coefficient list
   // Coefficients (smallest --> biggest degree)
   for (int i = 1; i < degree+1; i++) {
-    std::complex<double> j = i;
+    std::complex<double> j = degree-i;
     //Horners rule basically
-    result = result*z + coeffs[i]*j;
+    result = result*z + coeffs[degree-i]*j;
   }
 
   return result;
@@ -155,16 +157,30 @@ std::complex<double> Polynomial::find_root(
   unsigned int                const degree
 ) {
   // Stores next approximation
-  std::complex<double> x_k_next = 0.0;
+  std::complex<double> x_k_next{
+    (rand() + 1.0)/(RAND_MAX + 2.0)*20.0 - 10.0,
+    (rand() + 1.0)/(RAND_MAX + 2.0)*20.0 - 10.0
+  };
+  
   // Stores current approximation
-  std::complex<double> x_k = 1.0;
+  std::complex<double> x_k{
+    (rand() + 1.0)/(RAND_MAX + 2.0)*20.0 - 10.0,
+    (rand() + 1.0)/(RAND_MAX + 2.0)*20.0 - 10.0
+  };
 
-  double eps_step = 10e-10;
+  double eps_step = 1e-9;
   // Check when the next and current approximation are same
 
   int iteration = 0;
+  //std::cout << "DEBUG" << (std::abs(x_k - x_k_next)) << (eps_step) << std::endl;
 
-  while (abs(x_k - x_k_next) < eps_step) {
+  while (true) {
+    if ((iteration < 100) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
+      x_k = x_k_next;
+      break;
+    }
+
+
     // Let next approximation be current value
     x_k = x_k_next;
 
@@ -173,12 +189,12 @@ std::complex<double> Polynomial::find_root(
 
     x_k_next = x_k - ((f_x)/(der_f_x));
     
-    std::cout << "Iteration " << iteration << " with value " << x_k << std::endl;
+    std::cout << "Iteration " << iteration+1 << " with next value " << x_k_next << " and current value as " << x_k << std::endl;
 
     iteration +=1;
   }
 
-  return x_k_next;
+  return x_k;
 }
 
 // Polynomial division
@@ -194,6 +210,21 @@ std::complex<double> Polynomial::divide(
   unsigned int         const degree,
   std::complex<double> const r
 ) {
+  while (degree != 0 || degree != 1) {
+    std::complex<double> *res = new std::complex<double>[degree-1]{0};
+
+    // We start from highest order 
+    for (int i = degree-1; i > 0; i--) {
+      if (i == (degree - 1)) {
+        res[i] = coeffs[i + 1];
+      } else {
+        res[i] = coeffs[i + 1] + (r * res[i - 1]);
+      }
+    }
+
+    delete[] res;
+    res = nullptr;
+  }
   return 0.0;
 }
 
