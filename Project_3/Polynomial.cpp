@@ -102,7 +102,18 @@ std::complex<double> Polynomial::evaluate(
   unsigned int         const  degree,
   std::complex<double> const  z
 ) {
-  return 0.0;
+  // Use Horner's rule to evaluate polynomial
+
+  // Store the result here
+  double result;
+
+  // Iterate through coefficient list
+  for (int i = 0; i < degree+1; i++) {
+    //Horners rule basically
+    result = result*z + coeffs[i];
+  }
+
+  return result;
 }
 
 // Given the polynomial of degree 'degree', the coefficients
@@ -120,6 +131,7 @@ std::complex<double> Polynomial::find_root(
   std::complex<double> const *const coeffs,
   unsigned int                const degree
 ) {
+  
   return 0.0;
 }
 

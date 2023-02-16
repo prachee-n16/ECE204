@@ -50,6 +50,5 @@ void print_vector( std::vector<std::complex<double>> vec ) {
   for ( auto itr{ vec.begin() }; itr != vec.end(); ++itr ) {
     std::cout << *itr << std::endl;
   }
-
   std::cout << std::endl;
 }
