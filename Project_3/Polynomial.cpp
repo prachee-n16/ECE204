@@ -175,11 +175,13 @@ std::complex<double> Polynomial::find_root(
   //std::cout << "DEBUG" << (std::abs(x_k - x_k_next)) << (eps_step) << std::endl;
 
   while (true) {
-    if ((iteration < 100) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
-      x_k = x_k_next;
-      break;
-    }
+    iteration +=1;
 
+    if ((iteration > 1000) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
+      std::cout << "Iteration " << iteration << " with next value " << x_k_next << " and current value as " << x_k << std::endl;
+      x_k = x_k_next;
+      return x_k;
+    }
 
     // Let next approximation be current value
     x_k = x_k_next;
@@ -187,14 +189,9 @@ std::complex<double> Polynomial::find_root(
     std::complex<double> f_x = evaluate(coeffs, degree, x_k);
     std::complex<double> der_f_x  = deevaluate(coeffs, degree, x_k);
 
+
     x_k_next = x_k - ((f_x)/(der_f_x));
-    
-    std::cout << "Iteration " << iteration+1 << " with next value " << x_k_next << " and current value as " << x_k << std::endl;
-
-    iteration +=1;
   }
-
-  return x_k;
 }
 
 // Polynomial division
@@ -210,22 +207,18 @@ std::complex<double> Polynomial::divide(
   unsigned int         const degree,
   std::complex<double> const r
 ) {
-  while (degree != 0 || degree != 1) {
-    std::complex<double> *res = new std::complex<double>[degree-1]{0};
+  if (degree > 1) {
+    std::complex<double> *res = new std::complex<double>[degree - 1]{0};
 
-    // We start from highest order 
-    for (int i = degree-1; i > 0; i--) {
-      if (i == (degree - 1)) {
-        res[i] = coeffs[i + 1];
+    for (int i = degree - 1; i >= 0; i--) {
+      if (i == degree) {
+        res[i - 1] = coeffs[i];
       } else {
-        res[i] = coeffs[i + 1] + (r * res[i - 1]);
+        res[i - 1] = coeffs[i] + r*res[i - 2];
       }
     }
-
-    delete[] res;
-    res = nullptr;
+    return *res;
   }
-  return 0.0;
 }
 
 std::string to_string_term( unsigned int n ) {
