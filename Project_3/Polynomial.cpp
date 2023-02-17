@@ -114,7 +114,7 @@ std::complex<double> Polynomial::evaluate(
     //Horners rule basically
     // This result doesn't seem right
     // ok it's degree - i
-    result = coeffs[degree-i]+(z*result);
+    result = coeffs[degree-i] + (z * result);
   }
 
   return result;
@@ -128,13 +128,12 @@ std::complex<double> Polynomial::deevaluate(
   // Use Horner's rule to evaluate polynomial
 
   // Store the result here
-  std::complex<double> result;
+  std::complex<double> result = 0;
 
   // Iterate through coefficient list
   // Coefficients (smallest --> biggest degree)
   for (int i = 1; i < degree+1; i++) {
-    std::complex<double> j = degree-i;
-    //Horners rule basically
+    std::complex<double> j{ degree - i, 0.0 };
     result = result*z + coeffs[degree-i]*j;
   }
 
@@ -177,8 +176,7 @@ std::complex<double> Polynomial::find_root(
   while (true) {
     iteration +=1;
 
-    if ((iteration < 1000) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
-      std::cout << "Iteration " << iteration << " with next value " << x_k_next << " and current value as " << x_k << std::endl;
+    if ((iteration > 5) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
       x_k = x_k_next;
       return x_k;
     }
@@ -189,6 +187,9 @@ std::complex<double> Polynomial::find_root(
     std::complex<double> f_x = evaluate(coeffs, degree, x_k);
     std::complex<double> der_f_x  = deevaluate(coeffs, degree, x_k);
 
+    if (std::abs(imag(der_f_x)) == 0 && std::abs(real(der_f_x)) == 0) {
+      return x_k;
+    }
 
     x_k_next = x_k - ((f_x)/(der_f_x));
   }
