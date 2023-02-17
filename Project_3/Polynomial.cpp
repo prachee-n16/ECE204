@@ -177,7 +177,7 @@ std::complex<double> Polynomial::find_root(
   while (true) {
     iteration +=1;
 
-    if ((iteration > 1000) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
+    if ((iteration < 1000) || (std::abs(std::real(x_k) - std::real(x_k_next)) < eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) < eps_step)) {
       std::cout << "Iteration " << iteration << " with next value " << x_k_next << " and current value as " << x_k << std::endl;
       x_k = x_k_next;
       return x_k;
@@ -217,7 +217,8 @@ std::complex<double> Polynomial::divide(
         res[i - 1] = coeffs[i] + r*res[i - 2];
       }
     }
-    return *res;
+
+    return res[0];
   }
 }
 
