@@ -103,10 +103,10 @@ std::complex<double> Polynomial::evaluate(
   unsigned int         const  degree,
   std::complex<double> const  z
 ) {
-  std::complex<double> result = 0;
+  std::complex<double> result = coeffs[degree];
   
-  for (int i = 0; i < degree + 1; i++) { 
-    result = coeffs[degree-i] + (z * result);
+  for (int i = degree - 1; i < degree; i--) { 
+    result = coeffs[i] + (z * result);
   }
 
   return result;
@@ -117,11 +117,11 @@ std::complex<double> Polynomial::deevaluate(
   unsigned int         const  degree,
   std::complex<double> const  z
 ) {
-  std::complex<double> result = 0;
-
-  for (int i = 1; i < degree + 1; i++) {
+  std::complex<double> result = coeffs[degree];
+  
+  for (int i = degree - 1; i < degree; i--) { 
     std::complex<double> j{ degree - i, 0.0 };
-    result = result*z + coeffs[degree-i]*j;
+    result = coeffs[i]*j + (z * result);
   }
 
   return result;
@@ -149,7 +149,7 @@ std::complex<double> Polynomial::find_root(
   };
   
   // Stores current approximation
-  std::complex<double> x_k{1};
+  std::complex<double> x_k{0};
 
   double eps_step = 1e-9;
 
@@ -203,7 +203,7 @@ std::complex<double> Polynomial::divide(
     return result;
   }
 
-  return 0;
+  return evaluate(coeffs, degree, r);
 }
 
 std::string to_string_term( unsigned int n ) {
