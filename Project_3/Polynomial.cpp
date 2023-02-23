@@ -112,21 +112,6 @@ std::complex<double> Polynomial::evaluate(
   return result;
 }
 
-std::complex<double> Polynomial::deevaluate(
-  std::complex<double> const *const coeffs,
-  unsigned int         const  degree,
-  std::complex<double> const  z
-) {
-  std::complex<double> result = coeffs[degree];
-  
-  for (int i = degree - 1; i < degree; i--) { 
-    std::complex<double> j{ degree - i, 0.0 };
-    result = coeffs[i]*j + (z * result);
-  }
-
-  return result;
-}
-
 // Given the polynomial of degree 'degree', the coefficients
 // of which are given in the array 'coeffs', find an approximation
 // of a root.
@@ -153,19 +138,17 @@ std::complex<double> Polynomial::find_root(
 
   double eps_step = 1e-9;
 
-  // Check when the next and current approximation are same
-  int iteration = 1;
+  // Calculate the derivative coeff array
+  std::complex<double> der_coeffs[degree];
+  for (int i = 1; i <= degree; i++) {
+    der_coeffs[i - 1] = coeffs[i] * double(i);
+  };
 
   while ((std::abs(std::real(x_k) - std::real(x_k_next)) > eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) > eps_step)) {
-    iteration += 1;
     x_k = x_k_next;
 
-    if (degree == 1) {
-      return x_k;
-    }
-
     std::complex<double> f_x = evaluate(coeffs, degree, x_k);
-    std::complex<double> der_f_x  = deevaluate(coeffs, degree, x_k);
+    std::complex<double> der_f_x  = evaluate(der_coeffs, degree-1, x_k);
 
     x_k_next = x_k - ((f_x)/(der_f_x));
   }
@@ -186,24 +169,21 @@ std::complex<double> Polynomial::divide(
   unsigned int         const degree,
   std::complex<double> const r
 ) {
-  if (degree > 1) {
-    std::complex<double> *res = new std::complex<double>[degree]{0};
+  std::complex<double> *res = new std::complex<double>[degree]{0};
 
-    for (int i = 0; i < degree; i++) { 
-      if (i == 0) {
-        res[degree - 1 - i] = coeffs[degree - i];
-      } 
-      else {
-        res[degree - i - 1] = coeffs[degree - i] + r*res[degree - i];
-      }
+  for (int i = 0; i < degree; i++) { 
+    if (i == 0) {
+      res[degree - 1 - i] = coeffs[degree - i];
+    } 
+    else {
+      res[degree - i - 1] = coeffs[degree - i] + r*res[degree - i];
     }
-
-    std::complex<double> result = res[0];
-    delete[] res;
-    return result;
   }
 
-  return evaluate(coeffs, degree, r);
+  std::complex<double> result = res[0];
+  delete[] res;
+  return result;
+ 
 }
 
 std::string to_string_term( unsigned int n ) {
