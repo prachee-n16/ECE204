@@ -55,7 +55,7 @@ std::complex<double> Polynomial::operator()( std::complex<double> z ) const {
 }
 
 // This function is writen for you, but you can change it if
-// you wish. It is only necessary that it retern a std::vector
+// you wish. It is only necessary that it return a std::vector
 // instance with the roots. It must be 'const'.
 std::vector<std::complex<double>> Polynomial::roots() const {
   // The vector of roots to be returned by this function
@@ -105,7 +105,7 @@ std::complex<double> Polynomial::evaluate(
 ) {
   std::complex<double> result = coeffs[degree];
   
-  for (int i = degree - 1; i < degree; i--) { 
+  for (int i = degree - 1; i >= 0; i--) { 
     result = coeffs[i] + (z * result);
   }
 
@@ -128,23 +128,30 @@ std::complex<double> Polynomial::find_root(
   unsigned int                const degree
 ) {
   // Stores next approximation
-  std::complex<double> x_k_next{
+  std::complex<double> x_k{
     (rand() + 1.0)/(RAND_MAX + 2.0)*20.0 - 10.0,
     (rand() + 1.0)/(RAND_MAX + 2.0)*20.0 - 10.0
   };
   
   // Stores current approximation
-  std::complex<double> x_k{0};
+  //std::complex<double> x_k{0};
 
-  double eps_step = 1e-9;
+  double eps_step = 1e-10;
 
   // Calculate the derivative coeff array
   std::complex<double> der_coeffs[degree];
+  
   for (int i = 1; i <= degree; i++) {
     der_coeffs[i - 1] = coeffs[i] * double(i);
   };
 
-  while ((std::abs(std::real(x_k) - std::real(x_k_next)) > eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) > eps_step)) {
+  std::complex<double> f_x = evaluate(coeffs, degree, x_k);
+  std::complex<double> der_f_x  = evaluate(der_coeffs, degree-1, x_k);
+  std::complex<double> x_k_next = x_k - ((f_x)/(der_f_x));
+
+//(std::abs(std::real(x_k) - std::real(x_k_next)) > eps_step) && (std::abs(std::imag(x_k) - std::imag(x_k_next)) > eps_step)
+  while (std::abs(x_k - x_k_next) > eps_step) {
+    
     x_k = x_k_next;
 
     std::complex<double> f_x = evaluate(coeffs, degree, x_k);
@@ -153,7 +160,7 @@ std::complex<double> Polynomial::find_root(
     x_k_next = x_k - ((f_x)/(der_f_x));
   }
 
-  return x_k;
+  return x_k_next;
 }
 
 // Polynomial division
@@ -169,20 +176,50 @@ std::complex<double> Polynomial::divide(
   unsigned int         const degree,
   std::complex<double> const r
 ) {
-  std::complex<double> *res = new std::complex<double>[degree]{0};
 
-  for (int i = 0; i < degree; i++) { 
-    if (i == 0) {
-      res[degree - 1 - i] = coeffs[degree - i];
-    } 
-    else {
-      res[degree - i - 1] = coeffs[degree - i] + r*res[degree - i];
+  //stores the degree of quotient
+  int quotient_degree = 0; 
+
+  //stores coefficients for quotient
+  std::complex<double> *res = new std::complex<double>[degree]{0.0};
+
+  //if degree = 0 - polynomial is constant
+  if(degree == 0){
+    quotient_degree = 0;
+    //return the first element in the coeffs array
+    return coeffs[0];
+  } else {
+    //if degree is not 0 - perform division
+    quotient_degree = degree - 1;
+
+    //storing the remaineder result for division
+    std::complex<double> rem_result{coeffs[degree]};
+
+    for (int k{quotient_degree}; k >= 0; k--){
+      res[k] = rem_result;
+      rem_result = coeffs[k] + (rem_result * r);
+
+      //since rem_result stores the value of the coeffs array
+      //coeffs array at index k is set to the value of res array at index k
+      coeffs[k] = res[k];
     }
+
+    return rem_result;
+
   }
 
-  std::complex<double> result = res[0];
-  delete[] res;
-  return result;
+  // for (int i = 0; i < degree; i++) { 
+  //   if (i == 0) {
+  //     res[degree - 1 - i] = coeffs[degree - i];
+  //   } 
+  //   else {
+  //     res[degree - i - 1] = coeffs[degree - i] + r*res[degree - i];
+  //   }
+  // }
+
+  // std::complex<double> result = res[0];
+  // delete[] res;
+  // return result;
  
 }
 
