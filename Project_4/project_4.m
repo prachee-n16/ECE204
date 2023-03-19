@@ -39,13 +39,15 @@ for j = 1:iteration
   % find n approximations where
 
   y(1) = 0.0;
-  y(2) = y(1) + ((-1/24)*f(a-h) + (13/24)*f(x(1)) + (13/24)*f(x(2)) - (1/24)*f(x(3)))*h;
+  y(2) = y(1) + ((9/24)*f(x(1)) + (19/24)*f(a-h) - (5/24)*f(a-2*h) + (1/24)*f(a-3*h))*h;
+  y(3) = y(2) + ((9/24)*f(x(2)) + (19/24)*f(x(1)) - (5/24)*f(a-h) + (1/24)*f(a-2*h))*h;
 
-  for k = 3:n
-    % use the centered 4 point formula to approximate the integral
-    a = (-1/24)*f(x(k-2)) + (13/24)*f(x(k-1)) + (13/24)*f(x(k)) - (1/24)*f(x(k+1));
+  % try some thing here for backward 4 point formula
+  % find n approximations where
+  for k = 4:n+1
+    % use the backward 4 point formula to approximate the integral
+    a = (9/24)*f(x(k)) + (19/24)*f(x(k-1)) - (5/24)*f(x(k-2)) + (1/24)*f(x(k-3));
     a = a*h;
-    % y(k) = y(k-1) + approximation of integral from x(k-1) to x(k)
     y(k) = y(k-1) + a;
   end
 
