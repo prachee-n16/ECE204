@@ -1,7 +1,7 @@
 all: main clean-deps
 
-CXX = clang++
-override CXXFLAGS += -g -Wno-everything
+CXX = gcc
+override CXXFLAGS += -g -Wno-everything 
 
 SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.cpp' -print | sed -e 's/ /\\ /g')
 OBJS = $(SRCS:.cpp=.o)
@@ -14,7 +14,7 @@ DEPS = $(SRCS:.cpp=.d)
 	rm -f "$@.$$$$"
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c "$<" -o "$@"
+	$(CXX) $(CXXFLAGS) -c -std=c++11  "$<" -o "$@"
 
 include $(DEPS)
 

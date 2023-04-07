@@ -131,59 +131,26 @@ double range(std::function<double(double)> f,
              double a, double b,
              double max_freq)
 {
-    // values at the endpoints
-    double endpoint_a = f(a);
-    double endpoint_b = f(b);
+    // calculate the sampling interval T, to ensure the sampling rate is evenly spaced and that the last interval does not exceed the upper bound of the range.
+    double T = 1/max_freq;
+    int n = std::ceil(b - a)/ T;
+    T = (b - a)/n;
 
-    // Range has to be greater or equal to this number
-    double range = endpoint_a - endpoint_b;
-    
-    double k = 1;
-    double T = 1.0/max_freq;
+    // Let's create an array of x values where we want to sample f(x)
+    double x_k[(n+1)*4];
+    double f_x_k[(n+1)*4];
 
-    // having this be pure reciprocal gives us number of periods in one unit of v... so for v from a to b, gives us *that* many periods
-    
-    std::cout << "max_freq is : " << max_freq << std::endl;
+    for (int k = 0; k <= n*4; k++) {
+        x_k[k] = a + 0.25*k*T;
+    };
 
-    // v_k
-    double v_1 = a + 0.25*k*T;
-    // v_k+1
-    double v_2 = a + 0.25*(k+1)*T;
-    // v_k+2
-    double v_3 = a + 0.25*(k+2)*T;
-
-    double f_v_1 = f(v_1);
-    double f_v_2 = f(v_2);
-    double f_v_3 = f(v_3);
-
-    // So, the basic idea is I need to find the LCM of the periods of all the functions that make up this f(x)
-    // How do I do this?
-
-    std::cout << "Points " << v_1 << " " << v_2  << " " << v_3 << std::endl;
-
-    
-    std::tuple<double, double> max_num_range;
-    std::tuple<double, double> min_num_range;
-
-    // Step 3 logic: find where minimum and maximum lies
-    if (f_v_2 > f_v_1 && f_v_2 > f_v_3)
-    {
-        max_num_range = std::make_tuple(v_1, v_3);
-    } else if (f_v_1 > f_v_2 && f_v_1 > endpoint_a) {
-        max_num_range = std::make_tuple(a, v_2);
-    } else {
-        max_num_range = std::make_tuple(v_3, b);
+    // Go through every period and see if I can find local minima or local maxima
+    for (int i = 0; i < n; i++) {
+        double v_0 = x_k[i];
+        
     }
 
-    if (f_v_2 < f_v_1 && f_v_2 < f_v_3) {
-        min_num_range = std::make_tuple(v_1, v_3);
-    } else if (f_v_1 < endpoint_a && f_v_1 < f_v_2) {
-        min_num_range = std::make_tuple(a, v_2);
-    } else {
-        min_num_range = std::make_tuple(v_3, b);
-    }
+    std::cout << std::endl;
 
-    //std::cout << "Max Range: (" << std::get<0>(max_num_range) << ", " << std::get<1>(max_num_range) << ")" << std::endl;
-    //std::cout << "Min Range: (" << std::get<0>(min_num_range) << ", " << std::get<1>(min_num_range) << ")" << std::endl;
     return 0;
 }

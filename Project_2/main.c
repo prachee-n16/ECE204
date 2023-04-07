@@ -78,6 +78,7 @@ int main() {
   
   printf( "Current: %f +/- %f\n", curr_s,
           sqrt( curr_ss/RUNS - curr_s*curr_s ) );
+          
   printf( "Next:    %f +/- %f\n", next_s,
           sqrt( next_ss/RUNS - next_s*next_s ) );
 
