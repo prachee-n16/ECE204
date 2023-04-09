@@ -80,8 +80,20 @@ double range(std::function<double(double)> f,
         f_x_k[k] = f(x_k[k]);
     };
 
-    double min{f(a)};
-    double max{f(b)};
+    double min{0};
+    double max{0};
+
+    double f_a = f(a);
+    double f_b = f(b);
+
+    if (f_a < f(b)) {
+        min = f_a;
+        max = f_b;
+    } else {
+        min = f_b;
+        max = f_a;
+    }
+    
 
     double eps_step = 1e-6;
     double eps_abs = 1e-3;
@@ -197,7 +209,7 @@ double range(std::function<double(double)> f,
     };
 
     // Get it down using Successive parabolic interpolation
-    return max;
+    return max-min;
 }
 
 void sort(double &x0, double &x1, double &x2,
