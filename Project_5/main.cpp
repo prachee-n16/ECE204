@@ -94,9 +94,7 @@ double range(std::function<double(double)> f,
         max = f_a;
     }
     
-
-    double eps_step = 1e-6;
-    double eps_abs = 1e-3;
+    double eps_abs = 1e-12;
     int max_iterations = 100;
 
     // FIXME: This range is not right! but i will fix it later
@@ -133,7 +131,7 @@ double range(std::function<double(double)> f,
                 {
                     break;
                 }
-                else if ((std::abs(f2 - fnew) < eps_abs) && (std::abs(x2 - xnew) < eps_step))
+                else if ((std::abs(f2 - fnew) < eps_abs))
                 {
                     if (fnew <= f2)
                     {
@@ -182,7 +180,7 @@ double range(std::function<double(double)> f,
                 {
                     break;
                 }
-                else if ((std::abs(f2 - fnew) < eps_abs) && (std::abs(x2 - xnew) < eps_step))
+                else if ((std::abs(f2 - fnew) < eps_abs))
                 {
                     if (fnew <= f2)
                     {
